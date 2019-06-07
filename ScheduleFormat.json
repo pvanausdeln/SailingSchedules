@@ -1,0 +1,20 @@
+{
+  "Source":"Evergreen",
+  "SCAC":"EGLV",
+  "Vessel Name":"",
+  "Voyage":"",
+  "Vessel Stops": {
+    "Port Name":{
+      "Estimated Arrival":"",
+      "Estimated Departure":""
+    },
+    "Port Name 2":{
+      "Estimated Arrival":"",
+      "Estimated Departure":""
+    },
+    "Port Name 3":{
+      "Estimated Arrival":"",
+      "Estimated Departure":""
+    }
+  }
+}
