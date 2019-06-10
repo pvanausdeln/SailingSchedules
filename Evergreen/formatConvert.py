@@ -24,9 +24,9 @@ def main(filename, cwd):
         elif(index % 3 == 1): #build stop object
             stop[key] = {}
         elif(index % 3 == 2): #arrival date
-            stop[key.replace("Estimated Arrival ","")]["Estimated Arrival"] = value
+            stop[key.replace("Estimated Arrival ","")]["Estimated Arrival"] = value.replace("*","")
         elif(index % 3 == 0): # departure date
-            stop[key.replace("Estimated Departure ","")]["Estimated Departure"] = value
+            stop[key.replace("Estimated Departure ","")]["Estimated Departure"] = value.replace("*","")
         index += 1
     newJson["Vessel Stops"] = stop
     with open(path + "ContainerInformation\\" + filename, 'w') as outfile:  
