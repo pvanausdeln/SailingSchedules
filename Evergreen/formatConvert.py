@@ -3,6 +3,7 @@ import string
 import glob
 import sys
 import os
+import datetime
 
 def main(filename, cwd):
     path=""
@@ -24,9 +25,9 @@ def main(filename, cwd):
         elif(index % 3 == 1): #build stop object
             stop[key] = {}
         elif(index % 3 == 2): #arrival date
-            stop[key.replace("Estimated Arrival ","")]["Estimated Arrival"] = value.replace("*","")
+            stop[key.replace("Estimated Arrival ","")]["Estimated Arrival"] = value.replace("*","") + "/" + str(datetime.datetime.now().year) #assume current year
         elif(index % 3 == 0): # departure date
-            stop[key.replace("Estimated Departure ","")]["Estimated Departure"] = value.replace("*","")
+            stop[key.replace("Estimated Departure ","")]["Estimated Departure"] = value.replace("*","") + "/" + str(datetime.datetime.now().year) #assume current year
         index += 1
     newJson["Vessel Stops"] = stop
     with open(path + "ContainerInformation\\" + filename, 'w') as outfile:  
