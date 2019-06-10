@@ -16,7 +16,6 @@ def main(filename, cwd):
     newJson["SCAC"] = data.get("SCAC")
     newJson["Vessel Name"] = data.get("Vessel Name")
     newJson["Voyage Number"] = data.get("Voyage Number")
-    newJson["Vessel Stops"] = {}
     index = 0
     stop = {}
     for key, value in data.items():
