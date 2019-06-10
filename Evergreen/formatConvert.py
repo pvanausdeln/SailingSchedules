@@ -29,8 +29,9 @@ def main(filename, cwd):
             stop[key.replace("Estimated Departure ","")]["Estimated Departure"] = value
         index += 1
     newJson["Vessel Stops"] = stop
-    with open("ContainerInformation\\" + filename, 'w') as outfile:  
+    with open(path + "ContainerInformation\\" + filename, 'w') as outfile:  
         json.dump(newJson, outfile)
+    
 
 
 if __name__ == "__main__":
