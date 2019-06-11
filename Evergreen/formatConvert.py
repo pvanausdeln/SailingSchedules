@@ -4,12 +4,10 @@ import glob
 import sys
 import os
 import datetime
+import copy
 
-def main(filename, cwd):
-    path=""
-    for x in cwd.split("\\"):
-        path += x + "\\\\" #just to add escape sequences for the glob method to work fine
-    with open(path + "ContainerInformation\\" + filename) as json_file:
+def write(filename):
+    with open(filename) as json_file:
         data = json.load(json_file)
     newJson = {}
     newJson["Source"] = data.get("Source")
@@ -29,10 +27,17 @@ def main(filename, cwd):
             stop[key.replace("Estimated Departure ","")]["Estimated Departure"] = value.replace("*","") + "/" + str(datetime.datetime.now().year) #assume current year
         index += 1
     newJson["Vessel Stops"] = stop
-    with open(path + "ContainerInformation\\" + filename, 'w') as outfile:  
+    with open(filename, 'w') as outfile:  
         json.dump(newJson, outfile)
-    
 
+def main(cwd):
+    path=""
+    for x in cwd.split("\\"):
+        path += x + "\\\\" #just to add escape sequences for the glob method to work fine
+    fileList = glob.glob(r""+path+"ContainerInformation\\*.json", recursive = True)
+    fileList.sort(key=os.path.getmtime)
+    for file_name in fileList:
+        write(file_name)
 
 if __name__ == "__main__":
-    main(sys.argv[1], sys.argv[2])
+    main(sys.argv[1])
