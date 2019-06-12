@@ -5,6 +5,7 @@ import sys
 import os
 import datetime
 import copy
+import kafka
 
 def write(filename):
     with open(filename) as json_file:
@@ -23,12 +24,20 @@ def write(filename):
             stop[key] = {}
         elif(index % 3 == 2): #arrival date
             stop[key.replace("Estimated Arrival ","")]["Estimated Arrival"] = value.replace("*","") + "/" + str(datetime.datetime.now().year) #assume current year
-        elif(index % 3 == 0): # departure date
+        elif(index % 3 == 0): #departure date
             stop[key.replace("Estimated Departure ","")]["Estimated Departure"] = value.replace("*","") + "/" + str(datetime.datetime.now().year) #assume current year
         index += 1
     newJson["Vessel Stops"] = stop
     with open(filename, 'w') as outfile:  
         json.dump(newJson, outfile)
+    producer = kafka.KafkaProducer(bootstrap_servers=['10.138.0.2:9092'],
+                                    value_serializer=lambda x: json.dumps(x).encode('utf-8'),
+                                    linger_ms = 10)
+    producer.send('RPA_SAILINGSCHEDULE_QA', value=newJson)
+    producer.flush()
+
+def testMain(vessel):
+    write("ContainerInformation\\"+vessel+".json")
 
 def main(cwd):
     path=""
@@ -40,4 +49,5 @@ def main(cwd):
         write(file_name)
 
 if __name__ == "__main__":
+    #testMain(sys.argv[1])
     main(sys.argv[1])
