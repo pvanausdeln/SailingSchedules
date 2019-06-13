@@ -11,23 +11,33 @@ def write(filename):
     with open(filename) as json_file:
         data = json.load(json_file)
     newJson = {}
-    newJson["Source"] = data.get("Source")
-    newJson["SCAC"] = data.get("SCAC")
-    newJson["Vessel Name"] = data.get("Vessel Name")
-    newJson["Voyage Number"] = data.get("Voyage Number")
+    vesselInfo = {}
+    vesselInfo["source"] = data.get("Source")
+    vesselInfo["sCAC"] = data.get("SCAC")
+    vesselInfo["vesselCode"] = None
+    vesselInfo["vesselName"] = data.get("Vessel Name")
+    vesselInfo["voyageNumber"] = data.get("Voyage Number")
+    newJson["vesselInfo"] = vesselInfo
     index = 0
+    vesselStops = []
     stop = {}
+    stopNumber = 1
     for key, value in data.items():
         if(index < 4): #get past base data
             pass
         elif(index % 3 == 1): #build stop object
-            stop[key] = {}
+            stop = {}
+            stop["portName"] = key
+            stop["unlocCode"] = None
         elif(index % 3 == 2): #arrival date
-            stop[key.replace("Estimated Arrival ","")]["Estimated Arrival"] = value.replace("*","") + "/" + str(datetime.datetime.now().year) #assume current year
+            stop["estimatedArrival"] = value.replace("*","") + "/" + str(datetime.datetime.now().year) #assume current year
         elif(index % 3 == 0): #departure date
-            stop[key.replace("Estimated Departure ","")]["Estimated Departure"] = value.replace("*","") + "/" + str(datetime.datetime.now().year) #assume current year
+            stop["estimatedDeparture"] = value.replace("*","") + "/" + str(datetime.datetime.now().year) #assume current year
+            stop["sequenceNumber"] = stopNumber
+            stopNumber += 1
+            vesselStops.append(stop)
         index += 1
-    newJson["Vessel Stops"] = stop
+    newJson["vesselStops"] = vesselStops
     with open(filename, 'w') as outfile:  
         json.dump(newJson, outfile)
     producer = kafka.KafkaProducer(bootstrap_servers=['10.138.0.2:9092'],
